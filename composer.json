@@ -1,14 +1,14 @@
 {
     "name": "aboutcoders/process-control",
-    "description": "A process control library",
+    "description": "A PHP process control library",
     "type": "library",
     "keywords": ["process", "control", "pcntl"],
     "homepage": "http://aboutcoders.com/",
-    "license": "AboutCoders",
+    "license": "MIT",
     "authors": [
         {
             "name": "Hannes Schulz",
-            "email": "schulz@daten-bahn.de"
+            "email": "hannes.schulz@aboutcoders.com"
         }
     ],
     "require": {

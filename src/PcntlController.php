@@ -1,4 +1,12 @@
 <?php
+/*
+* This file is part of the process-control package.
+*
+* (c) Hannes Schulz <hannes.schulz@aboutcoders.com>
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 
 namespace Abc\ProcessControl;
 
@@ -8,7 +16,7 @@ use Psr\Log\NullLogger;
 /**
  * PcntlController determines whether to stop execution based on PCNTL events.
  *
- * @author Hannes Schulz <schulz@daten-bahn.de>
+ * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
 class PcntlController implements Controller
 {

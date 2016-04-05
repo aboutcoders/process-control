@@ -3,7 +3,9 @@ Process Control
 
 A PHP process control library.
 
-#The interface
+Build Status: [![Build Status](https://travis-ci.org/aboutcoders/process-control.svg?branch=master)](https://travis-ci.org/aboutcoders/process-control)
+
+## The interface
 
 The interface Controller defines the method doExit() that determines whether to exist a process.
 
@@ -19,7 +21,7 @@ interface Controller
 }
 ```
 
-#The PCNTL controller
+## The PCNTL controller
 
 The is one implementation of the interface that listens to PCNTL events in order to determine whether to exit a process.
 

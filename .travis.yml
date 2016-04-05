@@ -6,6 +6,5 @@ php:
 
 before_script:
   - wget http://getcomposer.org/composer.phar
-  - php -d memory_limit=-1 composer.phar require symfony/symfony:${SYMFONY_VERSION}
-  - php -d memory_limit=-1 composer.phar install
-  - phpunit
+  - php composer.phar install --no-interaction --prefer-source
+  - phpunit --coverage-text

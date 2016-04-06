@@ -4,7 +4,10 @@ php:
   - 5.6
   - 7.0
 
-before_script:
+before_install:
   - wget http://getcomposer.org/composer.phar
-  - php composer.phar install --no-interaction --prefer-source
+
+install: php -d memory_limit=-1 composer.phar install --no-interaction --prefer-source
+
+script:
   - phpunit --coverage-text

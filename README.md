@@ -3,8 +3,6 @@ Process Control
 
 A PHP process control library.
 
-Build Status: [![Build Status](https://travis-ci.org/aboutcoders/process-control.svg?branch=master)](https://travis-ci.org/aboutcoders/process-control)
-
 ## The interface
 
 The interface Controller defines the method doExit() that determines whether to exist a process.

@@ -15,7 +15,7 @@ namespace Abc\ProcessControl;
  *
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-interface Controller
+interface ControllerInterface
 {
     /**
      * Indicates whether to exit a process

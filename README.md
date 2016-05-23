@@ -8,7 +8,7 @@ A PHP process control library.
 The interface Controller defines the method doExit() that determines whether to exist a process.
 
 ```php
-interface Controller
+interface ControllerInterface
 {
     /**
      * Indicates whether to exit a process
@@ -19,7 +19,7 @@ interface Controller
 }
 ```
 
-## The PCNTL controller
+## The PcntlController
 
 The is one implementation of the interface that listens to PCNTL events in order to determine whether to exit a process.
 

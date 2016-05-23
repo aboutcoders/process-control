@@ -18,7 +18,7 @@ use Psr\Log\NullLogger;
  *
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class PcntlController implements Controller
+class PcntlControllerInterface implements ControllerInterface
 {
     /** @var bool */
     private $stop = false;

@@ -16,8 +16,8 @@ namespace Abc\ProcessControl;
 interface ControllerAwareInterface
 {
     /**
-     * @param Controller $controller
+     * @param ControllerInterface $controller
      * @return void
      */
-    public function setController(Controller $controller);
+    public function setController(ControllerInterface $controller);
 }

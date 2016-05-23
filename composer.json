@@ -1,8 +1,8 @@
 {
     "name": "aboutcoders/process-control",
-    "description": "A PHP process control library",
     "type": "library",
-    "keywords": ["process", "control", "pcntl"],
+    "description": "A PHP process control library",
+    "keywords": ["process", "control", "pcntl", "iteration", "controller", "signal"],
     "homepage": "http://aboutcoders.com/",
     "license": "MIT",
     "authors": [

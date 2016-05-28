@@ -5,7 +5,7 @@ A PHP process control library.
 
 ## The interface
 
-The interface Controller defines the method doExit() that determines whether to exist a process.
+The [ControllerInterface](./src/ControllerInterface.php) defines the method doExit() that indicates whether to exist a process.
 
 ```php
 interface ControllerInterface
@@ -21,7 +21,7 @@ interface ControllerInterface
 
 ## The PcntlController
 
-The is one implementation of the interface that listens to PCNTL events in order to determine whether to exit a process.
+The [PcntlController](./src/PcntlController.php) listens to PCNTL events in order to determine whether to exit a process.
 
 ```php
     $stopsignals = array(SIGTERM);
@@ -34,3 +34,13 @@ The is one implementation of the interface that listens to PCNTL events in order
         // do something
     }
 ```
+
+## The ChainController
+
+The [ChainController](./src/ChainController.php) executes multiple controllers in a chain in order to determine whether to exit a process.
+
+## The NullController
+
+The [NullController](./src/NullController.php) never indicates to exit a process.
+
+__Note: This controller can be used as fallback controller for the PcntlController in runtime environments where PCNTL functions to not exist.__

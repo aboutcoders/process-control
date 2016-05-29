@@ -50,7 +50,7 @@ class PcntlController implements ControllerInterface
 
         if ($fallbackController != null && (!function_exists('pcntl_signal') || !function_exists('pcntl_signal_dispatch'))) {
             $this->fallbackController = $fallbackController;
-            $this->logger->notice('PcntlController switched to fallback controller because PCNTL functions do not exist');
+            $this->logger->warning('PcntlController switched to fallback controller because PCNTL functions do not exist');
         } else {
 
             if (!function_exists('pcntl_signal')) {

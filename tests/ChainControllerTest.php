@@ -12,6 +12,9 @@ namespace Abc\ProcessControl\Tests;
 
 use Abc\ProcessControl\ChainController;
 
+/**
+ * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
+ */
 class ChainControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testDoExitIteratesOverAllControllers()

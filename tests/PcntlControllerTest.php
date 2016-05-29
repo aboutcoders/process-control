@@ -10,13 +10,13 @@
 
 namespace Abc\ProcessControl\Tests;
 
-
 use Abc\ProcessControl\ControllerInterface;
-use Abc\ProcessControl\NullController;
 use Abc\ProcessControl\PcntlController;
 use phpmock\phpunit\PHPMock;
 
-
+/**
+ * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
+ */
 class PcntlControllerTest extends \PHPUnit_Framework_TestCase
 {
     use PHPMock;
@@ -29,9 +29,20 @@ class PcntlControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->function_exists    = $this->getFunctionMock('Abc\ProcessControl', 'function_exists');
+        $this->function_exists = $this->getFunctionMock('Abc\ProcessControl', 'function_exists');
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testConstructChecksIfFunctionsExist()
+    {
+        $this->function_exists->expects($this->any())
+            ->willReturn(false);
+
+        new PcntlController(['SIGTERM']);
+    }
+    
     /**
      * @param bool $doExit
      * @dataProvider  provideBooleanValues()

@@ -11,6 +11,7 @@
 namespace Abc\ProcessControl\Tests;
 
 use Abc\ProcessControl\ChainController;
+use Abc\ProcessControl\ControllerInterface;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
@@ -19,8 +20,8 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testDoExitIteratesOverAllControllers()
     {
-        $controller1 = $this->getMock('Abc\ProcessControl\ControllerInterface');
-        $controller2 = $this->getMock('Abc\ProcessControl\ControllerInterface');
+        $controller1 = $this->createMock(ControllerInterface::class);
+        $controller2 = $this->createMock(ControllerInterface::class);
 
         $controller1->expects($this->once())
             ->method('doExit')
@@ -37,8 +38,8 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testDoExitReturnsTrue() {
 
-        $controller1 = $this->getMock('Abc\ProcessControl\ControllerInterface');
-        $controller2 = $this->getMock('Abc\ProcessControl\ControllerInterface');
+        $controller1 = $this->createMock(ControllerInterface::class);
+        $controller2 = $this->createMock(ControllerInterface::class);
 
         $controller1->expects($this->once())
             ->method('doExit')
@@ -55,8 +56,8 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testDoExitReturnsTrueOnFirstController() {
 
-        $controller1 = $this->getMock('Abc\ProcessControl\ControllerInterface');
-        $controller2 = $this->getMock('Abc\ProcessControl\ControllerInterface');
+        $controller1 = $this->createMock(ControllerInterface::class);
+        $controller2 = $this->createMock(ControllerInterface::class);
 
         $controller1->expects($this->once())
             ->method('doExit')

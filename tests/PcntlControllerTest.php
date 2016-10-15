@@ -54,7 +54,7 @@ class PcntlControllerTest extends \PHPUnit_Framework_TestCase
         $this->extension_loaded->expects($this->any())
             ->willReturn(false);
 
-        $fallbackController = $this->getMock(ControllerInterface::class);
+        $fallbackController = $this->createMock(ControllerInterface::class);
         $fallbackController->expects($this->any())
             ->method('doExit')
             ->willReturn($doExit);

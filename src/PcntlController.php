@@ -45,21 +45,14 @@ class PcntlController implements ControllerInterface
     public function __construct(array $stopSignals, ControllerInterface $fallbackController = null, LoggerInterface $logger = null)
     {
         $this->logger = $logger == null ? new NullLogger() : $logger;
+        $this->logger->info('Initialize PCNTL controller for signals {signals}', array('signals' => $stopSignals));
 
-        $this->logger->info('Initialize PCNTL process controller for signals {signals}', array('signals' => $stopSignals));
-
-        if ($fallbackController != null && (!function_exists('pcntl_signal') || !function_exists('pcntl_signal_dispatch'))) {
+        if (!extension_loaded('pcntl') && $fallbackController == null) {
+            throw new \RuntimeException('The PCNTL extension is not loaded');
+        } elseif (!extension_loaded('pcntl') && $fallbackController != null) {
             $this->fallbackController = $fallbackController;
             $this->logger->warning('PcntlController switched to fallback controller because PCNTL functions do not exist');
         } else {
-
-            if (!function_exists('pcntl_signal')) {
-                throw new \RuntimeException('The function "pcntl_signal" does not exist. (see http://de2.php.net/manual/en/book.pcntl.php)');
-            }
-            if (!function_exists('pcntl_signal_dispatch')) {
-                throw new \RuntimeException('The function "pcntl_signal_dispatch" does not exist. (see http://de2.php.net/manual/en/book.pcntl.php)');
-            }
-
             foreach ($stopSignals as $value) {
                 if (is_string($value)) {
                     $value = @constant($value);
@@ -76,7 +69,7 @@ class PcntlController implements ControllerInterface
                     throw new \InvalidArgumentException(sprintf('The value "%s" is not a valid process signal value', $value));
                 }
 
-                if (false === @pcntl_signal($value, array($this, 'handleSignal'))) {
+                if (false === @pcntl_signal($value, array(&$this, 'handleSignal'))) {
                     $this->logger->error(sprintf('Failed to register handler for signal "%s"', $value));
 
                     throw new \RuntimeException(sprintf('Failed to register handler for signal "%s"', $value));

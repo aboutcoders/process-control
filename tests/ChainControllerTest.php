@@ -19,7 +19,6 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testDoExitIteratesOverAllControllers()
     {
-
         $controller1 = $this->getMock('Abc\ProcessControl\ControllerInterface');
         $controller2 = $this->getMock('Abc\ProcessControl\ControllerInterface');
 

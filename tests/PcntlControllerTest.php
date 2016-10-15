@@ -24,32 +24,34 @@ class PcntlControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $function_exists;
+    private $extension_loaded;
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
-        $this->function_exists = $this->getFunctionMock('Abc\ProcessControl', 'function_exists');
+        $this->extension_loaded = $this->getFunctionMock('Abc\ProcessControl', 'extension_loaded');
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testConstructChecksIfFunctionsExist()
+    public function testConstructWithPcntlExtensionNotLoaded()
     {
-        $this->function_exists->expects($this->any())
+        $this->extension_loaded->expects($this->any())
             ->willReturn(false);
 
         new PcntlController(['SIGTERM']);
     }
-    
+
     /**
      * @param bool $doExit
      * @dataProvider  provideBooleanValues()
      */
-    public function testWithFallbackController($doExit)
+    public function testDoExistWithFallbackController($doExit)
     {
-        $this->function_exists->expects($this->any())
+        $this->extension_loaded->expects($this->any())
             ->willReturn(false);
 
         $fallbackController = $this->getMock(ControllerInterface::class);

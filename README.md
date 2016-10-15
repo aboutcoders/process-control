@@ -3,6 +3,8 @@ Process Control
 
 A PHP process control library.
 
+Build Status: [![Build Status](https://travis-ci.org/aboutcoders/process-control.svg?branch=master)](https://travis-ci.org/aboutcoders/process-control)
+
 ## The interface
 
 The [ControllerInterface](./src/ControllerInterface.php) defines the method doExit() that indicates whether to exist a process.
@@ -21,7 +23,7 @@ interface ControllerInterface
 
 ## The PcntlController
 
-The [PcntlController](./src/PcntlController.php) listens to PCNTL events in order to determine whether to exit a process.
+The [PcntlController](./src/PcntlController.php) listens to PCNTL events to determine whether to exit a process.
 
 ```php
     $stopsignals = array(SIGTERM);
@@ -37,7 +39,7 @@ The [PcntlController](./src/PcntlController.php) listens to PCNTL events in orde
 
 ## The ChainController
 
-The [ChainController](./src/ChainController.php) executes multiple controllers in a chain in order to determine whether to exit a process.
+The [ChainController](./src/ChainController.php) executes multiple controllers in a chain to determine whether to exit a process.
 
 ## The NullController
 

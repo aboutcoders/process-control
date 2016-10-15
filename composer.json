@@ -12,10 +12,11 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.3",
         "psr/log": "~1"
     },
     "require-dev": {
+        "php": ">=5.5",
         "phpunit/phpunit": "~4|~5",
         "php-mock/php-mock-phpunit": "^1.1"
     },

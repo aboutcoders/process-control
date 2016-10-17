@@ -18,9 +18,26 @@ namespace Abc\ProcessControl;
 interface ControllerInterface
 {
     /**
-     * Indicates whether to exit a process
+     * Indicates whether to stop a process.
      *
+     * @since 1.3.0
+     * @return boolean
+     */
+    public function doStop();
+
+    /**
+     * Indicates whether to exit a process.
+     *
+     * @deprecated since 1.3.0 (to be removed in 2.0)
      * @return boolean
      */
     public function doExit();
+
+
+    /**
+     * Indicates whether to pause a process.
+     *
+     * @return boolean
+     */
+    public function doPause();
 }

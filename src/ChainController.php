@@ -16,7 +16,7 @@ namespace Abc\ProcessControl;
 class ChainController implements ControllerInterface
 {
     /**
-     * @var array ControllerInterface[]
+     * @var ControllerInterface[]
      */
     private $controller;
 
@@ -35,9 +35,35 @@ class ChainController implements ControllerInterface
      */
     public function doExit()
     {
+        @trigger_error(sprintf('The %s method is deprecated since version 1.3.0 and will be removed in version 2.0. Use doStop() instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->doStop();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doStop()
+    {
         foreach ($this->controller as $controller) {
 
-            if($controller->doExit())
+            if($controller->doStop())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doPause()
+    {
+        foreach ($this->controller as $controller) {
+
+            if($controller->doPause())
             {
                 return true;
             }

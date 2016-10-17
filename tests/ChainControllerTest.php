@@ -24,11 +24,11 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
         $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
 
         $controller1->expects($this->once())
-            ->method('doExit')
+            ->method('doStop')
             ->willReturn(false);
 
         $controller2->expects($this->once())
-            ->method('doExit')
+            ->method('doStop')
             ->willReturn(false);
 
         $subject = new ChainController([$controller1, $controller2]);
@@ -36,17 +36,18 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($subject->doExit());
     }
 
-    public function testDoExitReturnsTrue() {
+    public function testDoExitReturnsTrue()
+    {
 
         $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
         $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
 
         $controller1->expects($this->once())
-            ->method('doExit')
+            ->method('doStop')
             ->willReturn(false);
 
         $controller2->expects($this->once())
-            ->method('doExit')
+            ->method('doStop')
             ->willReturn(true);
 
         $subject = new ChainController([$controller1, $controller2]);
@@ -54,20 +55,128 @@ class ChainControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($subject->doExit());
     }
 
-    public function testDoExitReturnsTrueOnFirstController() {
+    public function testDoExitReturnsTrueOnFirstController()
+    {
 
         $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
         $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
 
         $controller1->expects($this->once())
-            ->method('doExit')
+            ->method('doStop')
             ->willReturn(true);
 
         $controller2->expects($this->never())
-            ->method('doExit');
+            ->method('doStop');
 
         $subject = new ChainController([$controller1, $controller2]);
 
         $this->assertTrue($subject->doExit());
+    }
+
+    public function testDoStopIteratesOverAllControllers()
+    {
+        $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+        $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+
+        $controller1->expects($this->once())
+            ->method('doStop')
+            ->willReturn(false);
+
+        $controller2->expects($this->once())
+            ->method('doStop')
+            ->willReturn(false);
+
+        $subject = new ChainController([$controller1, $controller2]);
+
+        $this->assertFalse($subject->doStop());
+    }
+
+    public function testDoStopReturnsTrue()
+    {
+
+        $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+        $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+
+        $controller1->expects($this->once())
+            ->method('doStop')
+            ->willReturn(false);
+
+        $controller2->expects($this->once())
+            ->method('doStop')
+            ->willReturn(true);
+
+        $subject = new ChainController([$controller1, $controller2]);
+
+        $this->assertTrue($subject->doStop());
+    }
+
+    public function testDoStopReturnsTrueOnFirstController()
+    {
+        $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+        $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+
+        $controller1->expects($this->once())
+            ->method('doStop')
+            ->willReturn(true);
+
+        $controller2->expects($this->never())
+            ->method('doStop');
+
+        $subject = new ChainController([$controller1, $controller2]);
+
+        $this->assertTrue($subject->doStop());
+    }
+
+    public function testDoPauseIteratesOverAllControllers()
+    {
+        $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+        $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+
+        $controller1->expects($this->once())
+            ->method('doPause')
+            ->willReturn(false);
+
+        $controller2->expects($this->once())
+            ->method('doPause')
+            ->willReturn(false);
+
+        $subject = new ChainController([$controller1, $controller2]);
+
+        $this->assertFalse($subject->doPause());
+    }
+
+    public function testDoPauseReturnsTrue()
+    {
+        $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+        $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+
+        $controller1->expects($this->once())
+            ->method('doPause')
+            ->willReturn(false);
+
+        $controller2->expects($this->once())
+            ->method('doPause')
+            ->willReturn(true);
+
+        $subject = new ChainController([$controller1, $controller2]);
+
+        $this->assertTrue($subject->doPause());
+    }
+
+    public function testDoPauseReturnsTrueOnFirstController()
+    {
+        $controller1 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+        $controller2 = $this->getMockBuilder(ControllerInterface::class)->getMock();
+
+        $controller1->expects($this->once())
+            ->method('doPause')
+            ->willReturn(true);
+
+        $controller2->expects($this->never())
+            ->method('doPause');
+
+        $subject = new ChainController([$controller1, $controller2]);
+
+        $this->assertTrue($subject->doPause());
     }
 }

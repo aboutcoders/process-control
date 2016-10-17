@@ -20,5 +20,8 @@
     },
     "autoload": {
         "psr-4": { "Abc\\ProcessControl\\": "src" }
+    },
+    "branch-alias": {
+        "dev-master": "1.3-dev"
     }
 }

@@ -31,47 +31,45 @@ class PcntlController implements ControllerInterface
     protected $logger;
 
     /**
+     * @var array
+     */
+    private $stopSignals, $pauseSignals, $resumeSignals = array();
+
+    /**
      * @var bool
      */
     private $stop = false;
 
     /**
-     * @param array                $stopSignals        The signal values or the names of the signals that stop the iteration
-     * @param ControllerInterface  $fallbackController A fallback controller that will be used if PCNTL functions do not exist (e.g if not run in PHP CLI mode)
-     * @param LoggerInterface|null $logger
-     * @throws \RuntimeException If registration of the handler for a certain signal fails
-     * @throws \InvalidArgumentException If one of the stop signals is invalid
+     * @var bool
      */
-    public function __construct(array $stopSignals, ControllerInterface $fallbackController = null, LoggerInterface $logger = null)
+    private $pause = false;
+
+    /**
+     * @param array                $stopSignals        An array of signal values or name of signals that indicate to stop processing
+     * @param array                $pauseSignals       An array of signal values or name of signals that indicate to pause processing
+     * @param array                $resumeSignals      An array of signal values or name of signals that indicate to resume processing
+     * @param ControllerInterface  $fallbackController A fallback controller that will be used if PCNTL extension is not loaded
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(array $stopSignals, array $pauseSignals = array(), array $resumeSignals = array(), ControllerInterface $fallbackController = null, LoggerInterface $logger = null)
     {
-        $this->logger = $logger == null ? new NullLogger() : $logger;
+        $this->stopSignals        = $this->cleanSignals($stopSignals);
+        $this->pauseSignals       = $this->cleanSignals($pauseSignals);
+        $this->resumeSignals      = $this->cleanSignals($resumeSignals);
+        $this->fallbackController = $fallbackController;
+        $this->logger             = $logger == null ? new NullLogger() : $logger;
+
         $this->logger->info('Initialize PCNTL controller for signals {signals}', array('signals' => $stopSignals));
 
         if (!extension_loaded('pcntl') && $fallbackController == null) {
             throw new \RuntimeException('The PCNTL extension is not loaded');
         } elseif (!extension_loaded('pcntl') && $fallbackController != null) {
-            $this->fallbackController = $fallbackController;
+
             $this->logger->warning('PcntlController switched to fallback controller because PCNTL functions do not exist');
         } else {
-            foreach ($stopSignals as $value) {
-                if (is_string($value)) {
-                    $value = @constant($value);
-                    if (null === $value) {
-                        $this->logger->error(sprintf('The value "%s" does not specify name of a PCNTL signal constant', $value));
-
-                        throw new \InvalidArgumentException(sprintf('The value "%s" does not specify name of a PCNTL signal constant', $value));
-                    }
-                }
-
-                if (!is_int($value) || $value <= 0) {
-                    $this->logger->error(sprintf('The value "%s" is not a valid process signal value', $value));
-
-                    throw new \InvalidArgumentException(sprintf('The value "%s" is not a valid process signal value', $value));
-                }
-
+            foreach (array_merge($this->stopSignals, $this->pauseSignals, $this->resumeSignals) as $value) {
                 if (false === @pcntl_signal($value, array(&$this, 'handleSignal'))) {
-                    $this->logger->error(sprintf('Failed to register handler for signal "%s"', $value));
-
                     throw new \RuntimeException(sprintf('Failed to register handler for signal "%s"', $value));
                 }
             }
@@ -79,21 +77,42 @@ class PcntlController implements ControllerInterface
     }
 
     /**
+     * @deprecated since 1.3.0 (to be removed in 2.0)
      * {@inheritdoc}
      */
     public function doExit()
     {
+        @trigger_error(sprintf('The %s method is deprecated since version 1.3.0 and will be removed in version 2.0. Use doStop() instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->doStop();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doStop()
+    {
         if ($this->fallbackController != null) {
-            return $this->fallbackController->doExit();
+            return $this->fallbackController->doStop();
         }
 
         pcntl_signal_dispatch();
 
-        if ($this->stop == true) {
-            $this->logger->info('Inform process to exit gracefully');
+        return $this->stop;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doPause()
+    {
+        if ($this->fallbackController != null) {
+            return $this->fallbackController->doPause();
         }
 
-        return $this->stop;
+        pcntl_signal_dispatch();
+
+        return $this->pause;
     }
 
     /**
@@ -101,10 +120,45 @@ class PcntlController implements ControllerInterface
      *
      * @param int $signal
      */
-    private function handleSignal($signal)
+    protected function handleSignal($signal)
     {
-        $this->logger->info(sprintf('Handle PCNTL signal %s', $signal));
+        if (in_array($signal, $this->stopSignals)) {
+            $this->logger->info(sprintf('Handle stop signal (%s)', $signal));
+            $this->stop = true;
+        } elseif (in_array($signal, $this->pauseSignals)) {
+            $this->logger->info(sprintf('Handle pause signal (%s)', $signal));
+            $this->pause = true;
+        } elseif (in_array($signal, $this->resumeSignals)) {
+            $this->logger->info(sprintf('Handle resume signal (%s)', $signal));
+            $this->pause = false;
+        }
+    }
 
-        $this->stop = true;
+    /**
+     * Cleans a signal value.
+     *
+     * @param array $values
+     * @return array The cleaned values
+     * @throws \InvalidArgumentException If validation fails
+     */
+    private function cleanSignals(array $values)
+    {
+        $cleanedValues = array();
+        foreach ($values as $value) {
+            if (is_string($value)) {
+                $value = @constant($value);
+                if (null === $value) {
+                    throw new \InvalidArgumentException(sprintf('The value "%s" does not specify name of a PCNTL signal constant', $value));
+                }
+            }
+
+            if (!is_int($value) || $value <= 0) {
+                throw new \InvalidArgumentException(sprintf('The value "%s" is not a valid process signal value', $value));
+            }
+
+            $cleanedValues[] = $value;
+        }
+
+        return $cleanedValues;
     }
 }

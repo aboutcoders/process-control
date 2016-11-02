@@ -54,9 +54,6 @@ class PcntlController implements ControllerInterface
      */
     public function __construct(array $stopSignals, array $pauseSignals = array(), array $resumeSignals = array(), ControllerInterface $fallbackController = null, LoggerInterface $logger = null)
     {
-        $this->stopSignals        = $this->cleanSignals($stopSignals);
-        $this->pauseSignals       = $this->cleanSignals($pauseSignals);
-        $this->resumeSignals      = $this->cleanSignals($resumeSignals);
         $this->fallbackController = $fallbackController;
         $this->logger             = $logger == null ? new NullLogger() : $logger;
 
@@ -65,9 +62,12 @@ class PcntlController implements ControllerInterface
         if (!extension_loaded('pcntl') && $fallbackController == null) {
             throw new \RuntimeException('The PCNTL extension is not loaded');
         } elseif (!extension_loaded('pcntl') && $fallbackController != null) {
-
             $this->logger->warning('PcntlController switched to fallback controller because PCNTL functions do not exist');
-        } else {
+        } elseif (extension_loaded('pcntl')) {
+            $this->stopSignals   = $this->cleanSignals($stopSignals);
+            $this->pauseSignals  = $this->cleanSignals($pauseSignals);
+            $this->resumeSignals = $this->cleanSignals($resumeSignals);
+
             foreach (array_merge($this->stopSignals, $this->pauseSignals, $this->resumeSignals) as $value) {
                 if (false === @pcntl_signal($value, array(&$this, 'handleSignal'))) {
                     throw new \RuntimeException(sprintf('Failed to register handler for signal "%s"', $value));

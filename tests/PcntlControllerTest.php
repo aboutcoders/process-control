@@ -38,12 +38,23 @@ class PcntlControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function testConstructWithPcntlExtensionNotLoaded()
+    public function testConstructThrowsRuntimeExceptionIfPcntlNotLoaded()
     {
         $this->extension_loaded->expects($this->any())
             ->willReturn(false);
 
         new PcntlController(['SIGTERM']);
+    }
+
+    public function testConstructNotCleansSignalsIfPcntlNotLoaded()
+    {
+        $this->extension_loaded->expects($this->any())
+            ->willReturn(false);
+
+        $constant = $this->getFunctionMock('Abc\ProcessControl', 'constant');
+        $constant->expects($this->never());
+
+        new PcntlController(['SIGTERM'], [], [], $this->getMockBuilder(ControllerInterface::class)->getMock());
     }
 
     /**

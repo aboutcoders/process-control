@@ -120,7 +120,7 @@ class PcntlController implements ControllerInterface
      *
      * @param int $signal
      */
-    protected function handleSignal($signal)
+    public function handleSignal($signal)
     {
         if (in_array($signal, $this->stopSignals)) {
             $this->logger->info(sprintf('Handle stop signal (%s)', $signal));
